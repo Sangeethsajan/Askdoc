@@ -16,7 +16,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: "172.190.112.201"
-          username: "omgdocindia@outlook.com"
+          username: "azureuser"
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/omgdocindia/Askdoc
