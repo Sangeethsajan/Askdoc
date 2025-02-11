@@ -19,7 +19,6 @@ jobs:
           username: "azureuser"
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo chown -R $(whoami) /home/omgdocindia/Askdoc
             cd /home/omgdocindia/Askdoc
             git pull origin master
             docker-compose down
