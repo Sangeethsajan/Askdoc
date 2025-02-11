@@ -13,12 +13,15 @@ from io import BytesIO
 import os
 import uuid
 import ast
-import tempfile
 
 from app.Chat.db_services import DocumentService
 load_dotenv()
 
 doc_service = DocumentService()
+
+#Move this to separate service
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+index = pc.Index(host=os.environ.get("PINECONE_INDEX_HOST"))
 
 async def loadPdf(files:List[UploadFile] = File(...), userid: uuid.UUID = Path(...,title="The ID of the item to get")):
     vectorList = []
@@ -64,10 +67,7 @@ async def createEmbeddings(file):
     return vector.embed_documents(all_splits),all_splits
 
 async def createPineconeIndex(vector):
-    pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
-    
-    index = pc.Index(host=os.environ.get("PINECONE_INDEX_HOST"))
-    response = index.upsert(vector)
+    index.upsert(vector)
 
 async def deletePineconeIndex(documents: List[str]):
     pc = PineconeGRPC(api_key=os.environ.get("PINECONE_API_KEY"))
@@ -90,19 +90,14 @@ async def deletePineconeIndex(documents: List[str]):
 
 async def searchPineconeIndex(query, document_list):
     try:
-        # Initialize Pinecone
-        pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
-        index = pc.Index(host=os.environ.get("PINECONE_INDEX_HOST"))
-
-        # Create embeddings
         embeddings = OpenAIEmbeddings(
             model="text-embedding-3-small",
             openai_api_key=os.environ.get("OPENAI_API_KEY")
         )
         enities = await generateEntityOutput(query)
-        # Get query embedding and convert to list
+
         query_vector = [embeddings.embed_query(entity) for entity in enities]
-        # Query Pinecone
+
         processed_results = []
         for query in query_vector:
             results = index.query(
@@ -125,33 +120,6 @@ async def searchPineconeIndex(query, document_list):
     except Exception as e:
           # Add logging
         return {"error": str(e)}
-    
-async def generateLLLMOutput(pincone_result,query):
-    try:
-        client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-        context = ""
-        for result in pincone_result:
-            # Extract text content from metadata
-            content = result['metadata'].get('content', '')
-            context += f"\nContent: {content}\n"
-
-        system_prompt = """You are a helpful AI assistant answering questions based on the provided context. 
-        Use the context to provide accurate answers.If its a generic question like How are you or something like that, answer is appropriately. 
-        If the answer cannot be found in the context or provided context doesn't makes sence look for your previous response. If you couldn't find the answer in the previous response,
-        just say you don't know the answer."""
-
-        response = client.chat.completions.create(
-            model="gpt-4o",  # or your preferred model
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": f"Context: {context}\n\nQuestion: {query}"}
-            ],
-            temperature=0.7,
-            max_tokens=2000
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return str(e)
     
 async def generateEntityOutput(query):
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))    
@@ -206,6 +174,6 @@ async def LLMResponse(pincone_result, query):
                     last_content = current_content
                     yield current_content
     except Exception as e:
-        print(f"Error in generateLLLMOutput: {str(e)}")
+        print(f"Error in LLMRespone: {str(e)}")
         yield f"Error: {str(e)}"
 

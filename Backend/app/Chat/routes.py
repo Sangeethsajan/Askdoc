@@ -1,15 +1,14 @@
 from fastapi import APIRouter, File, UploadFile, Form, Response
 from fastapi.responses import JSONResponse, StreamingResponse
 from typing import List
+
 import uuid
 import json
-from app.Chat.db_services import DocumentService
-from app.Chat.services import loadPdf,searchPineconeIndex, generateLLLMOutput, LLMResponse, deletePineconeIndex
-from langchain_openai import OpenAIEmbeddings
-from pinecone import Pinecone
 import os
-from openai import OpenAI
-import ast
+
+from app.Chat.db_services import DocumentService
+from app.Chat.services import loadPdf,searchPineconeIndex, LLMResponse, deletePineconeIndex
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -30,7 +29,7 @@ async def ask(query: str = Form(...), document_list: str = Form(...)):
         sources = []
         document_list = json.loads(document_list)
         value = await searchPineconeIndex(query,document_list)
-        #result = await generateLLLMOutput(value,query)
+        
         for val in value:
             sources.append({"metadata":{"content": val["metadata"]["content"],
                                         "filename": val["metadata"]["file_name"],
@@ -74,7 +73,3 @@ async def delete_docs(user_id: str = Form(...)):
     except Exception as e:
         return Response(content=f"Error: {e}", status_code=500)
     return Response(content="Documents Deleted", status_code=200)
-
-@chat_router.post("/get_env/")
-async def get_env():
-    return JSONResponse(content={"api_key": os.environ.get("PINECONE_API_KEY"), "index_host": os.environ.get("PINECONE_INDEX_HOST")}, status_code=200)
