@@ -23,6 +23,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/omgdocindia/Askdoc
-            git pull origin master
+            git pull
             docker-compose down
             docker-compose up -d --build
