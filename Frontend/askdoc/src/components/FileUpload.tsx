@@ -49,11 +49,7 @@ const FileUpload = ({ onUploadSuccess, userId }: FileUploadProps) => {
     formData.append("user_id", userId);
 
     try {
-      const response = await makeAPIRequest(
-        "chat/load_docs/",
-        "POST",
-        formData
-      );
+      await makeAPIRequest("chat/load_docs/", "POST", formData);
       /*
       const response = await fetch("http://localhost:8000/chat/load_docs/", {
         method: "POST",
