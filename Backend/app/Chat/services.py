@@ -13,6 +13,7 @@ from io import BytesIO
 import os
 import uuid
 import ast
+import tempfile
 
 from app.Chat.db_services import DocumentService
 load_dotenv()
@@ -32,6 +33,7 @@ async def loadPdf(files:List[UploadFile] = File(...), userid: uuid.UUID = Path(.
         Pages = PdfReader(PdfFile)
         
         for PageNum, Page in enumerate(Pages.pages,1):
+
             VectorEmbeddings, OroginalTextSplits = await createEmbeddings(Page)
 
             for Index, EmbeddingChunks in enumerate(VectorEmbeddings):
