@@ -1,6 +1,6 @@
 import axios,{AxiosRequestConfig} from 'axios';
 
-const BASE_URL = 'http://localhost:8000'
+const BASE_URL = 'http://172.190.112.201:8000'
 const makeAPIRequest = async (url: string, method: string, data: FormData,config?: AxiosRequestConfig) => {
   try {
     const response = await axios({
