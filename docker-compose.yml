@@ -6,7 +6,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DECRYPT_KEY=CdBFncAwq7v1nqrrmSznOt-GKBXtN55ZtbOT6wWQtck=
+      - DECRYPT_KEY=ABRpFgRePJ1ti9FXwxPpTb-yquaI4QziRNZ2wuv_dHg=
 
   frontend:
     build: ./Frontend/askdoc
