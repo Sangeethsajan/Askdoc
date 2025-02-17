@@ -13,17 +13,6 @@ load_dotenv()
 
 video_router = APIRouter()
 db_service = DocumentService()
-@video_router.get("/")
-async def read_root():
-    return {"message": "Welcome to the Video QA API"}
-
-@video_router.post("/process-videos/")
-async def process_videos(request: VideoQARequest):
-    try:
-        await startProcessing(request)
-        return {"status": "success", "message": "Processing completed"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @video_router.post("/create-flow/")    
 async def create_flow(

@@ -49,7 +49,7 @@ async def get_sheet_data(sheet_url: str) -> List[str]:
     # Get video URLs from sheet
     result = service.spreadsheets().values().get(
         spreadsheetId=sheet_id,
-        range='A1:A3'  # Assuming URLs are in column B
+        range='A:A'  # Assuming URLs are in column B
     ).execute()
     
     values = result.get('values', [])
@@ -243,13 +243,13 @@ async def write_to_doc(answers: List[dict], doc_url: str):
             {
                 'insertText': {
                     'location': {'index': 1},
-                    'text': f"Q: {answer['answer']}\n\n"
+                    'text': f"A: {answer['answer']}\n\n"
                 }
             },
             {
                 'insertText': {
                     'location': {'index': 1},
-                    'text': f"A: {answer['question']}\n\n"
+                    'text': f"Q: {answer['question']}\n\n"
                 }
             }
         ])
