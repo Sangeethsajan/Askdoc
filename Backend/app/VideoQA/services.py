@@ -1,17 +1,14 @@
 from app.VideoQA.models import VideoQARequest
 from fastapi import HTTPException
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from typing import Optional, List
-import googleapiclient.discovery
 from google.oauth2 import service_account
 from youtube_transcript_api import YouTubeTranscriptApi
 import pinecone
-from openai import OpenAI,AsyncOpenAI
+from openai import OpenAI
 import json
 import os
 from googleapiclient.discovery import build
-from google.oauth2.credentials import Credentials
 GOOGLE_CREDS = json.loads(os.environ.get("GOOGLE_CREDS"))
 async def startProcessing(request: VideoQARequest):
     try:

@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   backend:
@@ -6,7 +5,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DECRYPT_KEY=ABRpFgRePJ1ti9FXwxPpTb-yquaI4QziRNZ2wuv_dHg=
+      - DECRYPT_KEY=oW2DNvb03yPb0-kZSUA_LDifAOdOxvRMMPLjpD6ciDo=
 
   frontend:
     build: ./Frontend/askdoc

@@ -1,7 +1,10 @@
 from cryptography.fernet import Fernet
 import os
 
-decrypt_key = os.getenv('DECRYPT_KEY')
+from dotenv import load_dotenv
+load_dotenv()
+
+decrypt_key = 'Qm3LzVPgIfiR7b3HAy5FeKQTnfuqDX8PJVO6lhjZXAE='
 if not decrypt_key:
     raise Exception("DECRYPT_KEY not found in environment variables")
 
